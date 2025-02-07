@@ -55,6 +55,7 @@ jobs:
           command: 'init'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
           backendType: 'azurerm'
+          backendServiceArm: 'EU Digital Non-Prod'
           environmentServiceNameAzureRM: 'EU Digital Non-Prod'
           backendAzureRmResourceGroupName: '${{ parameters.storageAccountRG }}'
           backendAzureRmStorageAccountName: '${{ parameters.storageAccountName }}'
