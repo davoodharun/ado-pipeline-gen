@@ -41,7 +41,7 @@ jobs:
           displayName: 'Set Azure DevOps Provider Variables'
 
         # Initialize Terraform
-        - task: TerraformCLI@0
+        - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
           inputs:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -50,7 +50,7 @@ jobs:
           displayName: 'Terraform Init'
 
         # Apply Terraform configuration using pipelines.json as input
-        - task: TerraformCLI@0
+        - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
           inputs:
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
