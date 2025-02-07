@@ -19,8 +19,8 @@ locals {
 
 # Get the GitHub service connection
 data "azuredevops_serviceendpoint_github" "github" {
-  project_id            = var.project_name
-  service_endpoint_name = "GitHub-ExelonCorp"
+  project_id            = "EU-Infrastructure"
+  service_endpoint_name = "exeloncorp"
 }
 
 provider "azuredevops" {
