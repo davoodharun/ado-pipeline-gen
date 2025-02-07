@@ -17,6 +17,12 @@ locals {
   formatted_repo_name = lower(replace(local.repo_name, "/[^a-zA-Z0-9]/", "-"))
 }
 
+# Get the GitHub service connection
+data "azuredevops_serviceendpoint_github" "github" {
+  project_id            = var.project_name
+  service_endpoint_name = "GitHub-ExelonCorp"
+}
+
 provider "azuredevops" {
   # Authentication is configured using environment variables:
   # AZDO_ORG_SERVICE_URL and AZDO_PERSONAL_ACCESS_TOKEN
@@ -64,10 +70,11 @@ resource "azuredevops_build_definition" "pipelines" {
   path         = "\\_pipelines\\${var.pipelines[count.index].owning_team}\\${local.formatted_repo_name}"
 
   repository {
-    repo_type   = "TfsGit"
+    repo_type   = "GitHub"
     repo_id     = var.repository_id
     branch_name = var.pipelines[count.index].branch
     yml_path    = var.pipelines[count.index].yaml_path
+    service_connection_id = data.azuredevops_serviceendpoint_github.github.id
   }
 }
 
