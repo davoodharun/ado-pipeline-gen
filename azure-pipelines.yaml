@@ -13,3 +13,4 @@ extends:
     storageAccountName: 'xzeentfstatessta000'
     storageAccountRG: 'XZE-E-N-UCDSEC-S-RGP-10'
     containerName: 'adopipelines'
+    pipeline_location: EU-Infrastructure

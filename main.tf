@@ -60,7 +60,7 @@ resource "azuredevops_build_definition" "pipelines" {
     var.pipelines[count.index].environment,
     var.pipelines[count.index].suffix
   ]))
-  path         = "\\${var.pipelines[count.index].owning_team}\\${local.formatted_repo_name}"
+  path         = "\\_pipelines\\${var.pipelines[count.index].owning_team}\\${local.formatted_repo_name}"
 
   repository {
     repo_type   = "TfsGit"
