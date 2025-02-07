@@ -4,10 +4,12 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-
 extends:
   template: create-pipelines.yaml  # Template is in the root directory
   parameters:
     repositories:
       - repository: EU-Innovation-GetSubscriptionKey
         project: EU-Services
+    storageAccountName: 'yourstorageaccount'
+    storageAccountRG: 'your-storage-rg'
+    containerName: 'tfstate'
