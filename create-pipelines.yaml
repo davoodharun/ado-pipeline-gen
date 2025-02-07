@@ -29,7 +29,7 @@ jobs:
             AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
 
         # Install Terraform
-        - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+        - task: TerraformInstaller@0
           inputs:
             terraformVersion: 'latest'
           displayName: 'Install Terraform'
