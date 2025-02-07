@@ -4,65 +4,57 @@ parameters:
     default:
       - repository: repo1
         project: project1
-      - repository: repo2 
-        project: project2
-      - repository: repo3
-        project: project3
-
 
 jobs:
-  - job: DownloadConfigs
-    displayName: "Download Pipeline Configs"
-    strategy:
-      matrix: ${{ each repo in parameters.repositories }}:
-        ${{ repo.repository }}_${{ repo.project }}:
-          repository_name: ${{ repo.repository }}
-          project_name: ${{ repo.project }}
-    steps:
-      # Install Node.js runtime environment for running JavaScript scripts
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '14.x'
+  - ${{ each repo in parameters.repositories }}:
+    - job: Pipeline_${{ replace(repo.repository, '-', '_') }}
+      displayName: "Configure Pipeline for ${{ repo.repository }}"
+      steps:
+        # Install Node.js runtime environment for running JavaScript scripts
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '14.x'
 
-      # Install dependencies
-      - script: |
-          npm install
-        displayName: "Install dependencies"
+        # Install dependencies
+        - script: |
+            npm install
+          displayName: "Install dependencies"
 
-      # Execute the script that checks pipeline configurations for this repository
-      - script: |
-          node get-pipeline-config.js "$(repository_name)" "$(project_name)"
-        displayName: "Download pipeline configuration for $(repository_name)"
-        env:
-          AZDO_ORG_SERVICE_URL: $(System.TeamFoundationCollectionUri)
-          AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+        # Execute the script that checks pipeline configurations for this repository
+        - script: |
+            node get-pipeline-config.js "${{ repo.repository }}" "${{ repo.project }}"
+          displayName: "Download pipeline configuration for ${{ repo.repository }}"
+          env:
+            AZDO_ORG_SERVICE_URL: $(System.TeamFoundationCollectionUri)
+            AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
 
-      # Install Terraform
-      - task: TerraformInstaller@0
-        inputs:
-          terraformVersion: 'latest'
-        displayName: 'Install Terraform'
-      # Set environment variables for Azure DevOps provider
-      - script: |
-          echo "##vso[task.setvariable variable=AZDO_ORG_SERVICE_URL]$(System.TeamFoundationCollectionUri)"
-          echo "##vso[task.setvariable variable=AZDO_PERSONAL_ACCESS_TOKEN]$(System.AccessToken)"
-        displayName: 'Set Azure DevOps Provider Variables'
-      # Initialize Terraform
-      - task: TerraformCLI@0
-        inputs:
-          command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
-          backendType: 'azurerm'
-          backendServiceArm: 'Azure Service Connection'
-        displayName: 'Terraform Init'
+        # Install Terraform
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
+          displayName: 'Install Terraform'
 
-      # Apply Terraform configuration using pipelines.json as input
-      - task: TerraformCLI@0
-        inputs:
-          command: 'apply'
-          workingDirectory: '$(System.DefaultWorkingDirectory)'
-          environmentServiceName: 'Azure Service Connection'
-          commandOptions: '-auto-approve -var="project_name=$(project_name)" -var="repository_id=$(repository_name)" -var-file="pipelines.json"'
-        displayName: 'Terraform Apply'
+        # Set environment variables for Azure DevOps provider
+        - script: |
+            echo "##vso[task.setvariable variable=AZDO_ORG_SERVICE_URL]$(System.TeamFoundationCollectionUri)"
+            echo "##vso[task.setvariable variable=AZDO_PERSONAL_ACCESS_TOKEN]$(System.AccessToken)"
+          displayName: 'Set Azure DevOps Provider Variables'
 
+        # Initialize Terraform
+        - task: TerraformCLI@0
+          inputs:
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendType: 'azurerm'
+            backendServiceArm: 'Azure Service Connection'
+          displayName: 'Terraform Init'
+
+        # Apply Terraform configuration using pipelines.json as input
+        - task: TerraformCLI@0
+          inputs:
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            environmentServiceName: 'Azure Service Connection'
+            commandOptions: '-auto-approve -var="project_name=${{ repo.project }}" -var="repository_id=${{ repo.repository }}" -var-file="pipelines.json"'
+          displayName: 'Terraform Apply'
   
