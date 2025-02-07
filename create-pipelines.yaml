@@ -49,8 +49,9 @@ jobs:
         displayName: 'Set Azure DevOps Provider Variables'
 
       # Initialize Terraform
-      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      - task: TerraformTaskV4@4
         inputs:
+          provider: 'azurerm'
           command: 'init'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
           backendType: 'azurerm'
@@ -61,18 +62,22 @@ jobs:
           backendAzureRmKey: 'pipeline_$(formattedRepoName).tfstate'
         displayName: 'Terraform Init'
 
-      # Apply Terraform configuration using pipelines.json as input
-      - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+      # Add a debug step to verify backend configuration
+      - script: |
+          echo "Checking Terraform state..."
+          terraform show
+          echo "Checking backend configuration..."
+          terraform workspace show
+        displayName: 'Debug Terraform State'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+      # Apply Terraform configuration
+      - task: TerraformTaskV4@4
         inputs:
+          provider: 'azurerm'
           command: 'apply'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
-          environmentServiceName: 'EU Digital Non-Prod'
-          commandOptions: '-auto-approve -var="repository_id=exeloncorp/${{ parameters.repository }}" -var-file="pipelines.json"'
-          backendType: 'azurerm'
-          backendServiceArm: 'EU Digital Non-Prod'
-          backendAzureRmResourceGroupName: '${{ parameters.storageAccountRG }}'
-          backendAzureRmStorageAccountName: '${{ parameters.storageAccountName }}'
-          backendAzureRmContainerName: '${{ parameters.containerName }}'
-          backendAzureRmKey: 'pipeline_$(formattedRepoName).tfstate'
+          environmentServiceConnection: 'EU Digital Non-Prod'
+          commandOptions: '-auto-approve -var="repository_id=${{ parameters.repositoryName }}" -var-file="pipelines.json"'
         displayName: 'Terraform Apply'
   
