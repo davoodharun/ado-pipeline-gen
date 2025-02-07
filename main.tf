@@ -54,7 +54,12 @@ variable "pipelines" {
 resource "azuredevops_build_definition" "pipelines" {
   count        = length(var.pipelines)
   project_id   = var.project_name
-  name         = "${local.formatted_repo_name}-${var.pipelines[count.index].name_prefix}-${var.pipelines[count.index].owning_team}-${var.pipelines[count.index].environment}${var.pipelines[count.index].suffix != "" ? "-" : ""}${var.pipelines[count.index].suffix}"
+  name         = join("-", compact([
+    local.formatted_repo_name,
+    var.pipelines[count.index].name_prefix,
+    var.pipelines[count.index].environment,
+    var.pipelines[count.index].suffix
+  ]))
   path         = "\\${var.pipelines[count.index].owning_team}\\${local.formatted_repo_name}"
 
   repository {
