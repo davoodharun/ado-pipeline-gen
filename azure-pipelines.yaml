@@ -1,0 +1,20 @@
+trigger:
+  - main
+
+variables:
+  repositories:
+    [
+      {
+        "repository": "repo1",
+        "project": "project1"
+      },
+      {
+        "repository": "repo2",
+        "project": "project2"
+      }
+    ]
+
+extends:
+  template: create-pipelines.yaml  # Template is in the root directory
+  parameters:
+    repositories: ${{ variables.repositories }} 
