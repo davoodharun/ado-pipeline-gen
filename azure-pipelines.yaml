@@ -1,6 +1,9 @@
 trigger:
   - main
 
+pool:
+  vmImage: 'ubuntu-latest'
+  
 variables:
   # Variables must be defined without sequence notation
   repositories_var: |

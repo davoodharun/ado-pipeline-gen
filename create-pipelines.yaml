@@ -1,8 +1,3 @@
-trigger:
-  - main
-
-pool:
-  vmImage: 'ubuntu-latest'
 parameters:
   - name: repositories
     type: object
