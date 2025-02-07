@@ -27,7 +27,7 @@ const filePath = '.azuredevops/pipelines.json';
 const branch = 'main';
 
 
-
+console.log(organization)
 // Configuration
 
 const outputFilePath = path.join(__dirname, path.basename(filePath));
@@ -52,6 +52,7 @@ async function downloadFile() {
         fs.writeFileSync(outputFilePath, response.data);
         console.log(`File downloaded successfully: ${outputFilePath}`);
     } catch (error) {
+        console.log(error)
         console.error('Error downloading file:', error.response ? error.response.data : error.message);
     }
 }
