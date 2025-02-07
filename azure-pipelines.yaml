@@ -5,6 +5,7 @@ parameters:
     type: string
   - name: project_name
     type: string
+    default: EU-Services
 
 pool:
   vmImage: 'ubuntu-latest'
