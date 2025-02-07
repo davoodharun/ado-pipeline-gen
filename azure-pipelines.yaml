@@ -5,12 +5,8 @@ variables:
   repositories:
     [
       {
-        "repository": "repo1",
-        "project": "project1"
-      },
-      {
-        "repository": "repo2",
-        "project": "project2"
+        "repository": "EU-Innovation-GetSubscriptionKey",
+        "project": "EU-Services"
       }
     ]
 
