@@ -1,8 +1,3 @@
-variable "azure_devops_org_url" {
-  description = "Azure DevOps organization URL"
-  type        = string
-}
-
 variable "project_name" {
   description = "Azure DevOps project name"
   type        = string

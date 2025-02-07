@@ -51,6 +51,11 @@ jobs:
         inputs:
           terraformVersion: 'latest'
         displayName: 'Install Terraform'
+      # Set environment variables for Azure DevOps provider authentication
+      - script: |
+          echo "##vso[task.setvariable variable=AZDO_ORG_SERVICE_URL]$(azure_devops_org_url)"
+          echo "##vso[task.setvariable variable=AZDO_PERSONAL_ACCESS_TOKEN]$(System.AccessToken)"
+        displayName: 'Set Azure DevOps Provider Environment Variables'
 
       # Initialize Terraform
       - task: TerraformCLI@0
@@ -67,7 +72,7 @@ jobs:
           command: 'apply'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
           environmentServiceName: 'Azure Service Connection'
-          commandOptions: '-auto-approve -var="azure_devops_org_url=$(azure_devops_org_url)" -var="project_name=$(project_name)" -var="repository_id=$(repository_name)" -var-file="pipelines.json"'
+          commandOptions: '-auto-approve -var="project_name=$(project_name)" -var="repository_id=$(repository_name)" -var-file="pipelines.json"'
         displayName: 'Terraform Apply'
 
   
