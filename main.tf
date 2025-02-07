@@ -47,3 +47,14 @@ resource "azuredevops_build_definition" "pipelines" {
     yml_path   = var.pipelines[count.index].yaml_path
   }
 }
+output "pipeline_details" {
+  description = "Details of the provisioned Azure DevOps pipelines"
+  value = [
+    for pipeline in azuredevops_build_definition.pipelines : {
+      name = pipeline.name
+      path = pipeline.path
+      yaml_path = pipeline.repository[0].yml_path
+      branch = pipeline.repository[0].branch_name
+    }
+  ]
+}
