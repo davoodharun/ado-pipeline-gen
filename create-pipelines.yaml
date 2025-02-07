@@ -14,11 +14,6 @@ parameters:
       - repository: repo3
         project: project3
 
-variables:
-  azure_devops_org_url: '<YOUR_AZURE_DEVOPS_ORG_URL>'
-  project_name: '<YOUR_PROJECT_NAME>'
-  personal_access_token: '<YOUR_PERSONAL_ACCESS_TOKEN>'
- # Ensure this is a valid JSON array string
 
 jobs:
   - job: DownloadConfigs
@@ -44,7 +39,7 @@ jobs:
           node get-pipeline-config.js "$(repository_name)" "$(project_name)"
         displayName: "Download pipeline configuration for $(repository_name)"
         env:
-          AZURE_DEVOPS_ORG_URL: $(azure_devops_org_url)
+          AZURE_DEVOPS_ORG_URL: $(System.TeamFoundationCollectionUri)
           AZURE_DEVOPS_TOKEN: $(System.AccessToken)
       # Install Terraform
       - task: TerraformInstaller@0
@@ -53,7 +48,7 @@ jobs:
         displayName: 'Install Terraform'
       # Set environment variables for Azure DevOps provider authentication
       - script: |
-          echo "##vso[task.setvariable variable=AZDO_ORG_SERVICE_URL]$(azure_devops_org_url)"
+          echo "##vso[task.setvariable variable=AZDO_ORG_SERVICE_URL]$(System.TeamFoundationCollectionUri)"
           echo "##vso[task.setvariable variable=AZDO_PERSONAL_ACCESS_TOKEN]$(System.AccessToken)"
         displayName: 'Set Azure DevOps Provider Environment Variables'
 
