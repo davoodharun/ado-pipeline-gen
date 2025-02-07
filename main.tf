@@ -16,10 +16,12 @@ locals {
   # Format repository name by removing special characters and converting to lowercase
   formatted_repo_name = lower(replace(local.repo_name, "/[^a-zA-Z0-9]/", "-"))
 }
-
+data "azuredevops_project" "project" {
+  name = "EU-Infrastructure"
+}
 # Get the GitHub service connection
 data "azuredevops_serviceendpoint_github" "github" {
-  project_id            = "EU-Infrastructure"
+  project_id            = data.azuredevops_project.project.id
   service_endpoint_name = "exeloncorp"
 }
 
