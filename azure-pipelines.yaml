@@ -2,10 +2,11 @@ trigger:
   - main
 
 variables:
-  repositories:
+  # Variables must be defined without sequence notation
+  repositories_var: |
     [
       {
-        "repository": "EU-Innovation-GetSubscriptionKey",
+        "repository": "EU-Innovation-GetSubscriptionKey", 
         "project": "EU-Services"
       }
     ]
