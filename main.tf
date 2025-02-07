@@ -7,8 +7,14 @@ terraform {
   }
 }
 locals {
+  # GitHub organization name to strip from repository paths
+  github_org = "exeloncorp"
+ 
+  # Extract just the repository name without the org prefix
+  repo_name = trimprefix(var.repository_id, "${local.github_org}/")
+ 
   # Format repository name by removing special characters and converting to lowercase
-  formatted_repo_name = lower(replace(var.repository_id, "/[^a-zA-Z0-9]/", "-"))
+  formatted_repo_name = lower(replace(local.repo_name, "/[^a-zA-Z0-9]/", "-"))
 }
 
 provider "azuredevops" {
@@ -22,8 +28,14 @@ variable "project_name" {
 }
 
 variable "repository_id" {
-  description = "Azure DevOps repository ID"
+  description = "Full GitHub repository path (org/repo)"
   type        = string
+}
+
+variable "github_org" {
+  description = "GitHub organization name"
+  type        = string
+  default     = "exeloncorp"  # Can be overridden if needed
 }
 
 variable "pipelines" {
