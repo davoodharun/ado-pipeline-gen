@@ -1,3 +1,17 @@
+terraform {
+  required_providers {
+    azuredevops = {
+      source  = "microsoft/azuredevops"
+      version = "~> 0.5.0"
+    }
+  }
+}
+
+provider "azuredevops" {
+  # Authentication is configured using environment variables:
+  # AZDO_ORG_SERVICE_URL and AZDO_PERSONAL_ACCESS_TOKEN
+}
+
 variable "project_name" {
   description = "Azure DevOps project name"
   type        = string
