@@ -44,6 +44,6 @@ resource "azuredevops_build_definition" "pipelines" {
     repo_type   = "TfsGit"
     repo_id     = var.repository_id
     branch_name = var.pipelines[count.index].branch
-    yaml_path   = var.pipelines[count.index].yaml_path
+    yml_path   = var.pipelines[count.index].yaml_path
   }
 }
