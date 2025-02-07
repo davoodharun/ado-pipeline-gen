@@ -1,0 +1,73 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+parameters:
+  - name: repositories
+    type: object
+    default:
+      - repository: repo1
+        project: project1
+      - repository: repo2 
+        project: project2
+      - repository: repo3
+        project: project3
+
+variables:
+  azure_devops_org_url: '<YOUR_AZURE_DEVOPS_ORG_URL>'
+  project_name: '<YOUR_PROJECT_NAME>'
+  personal_access_token: '<YOUR_PERSONAL_ACCESS_TOKEN>'
+ # Ensure this is a valid JSON array string
+
+jobs:
+  - job: DownloadConfigs
+    displayName: "Download Pipeline Configs"
+    strategy:
+      matrix: ${{ each repo in parameters.repositories }}:
+        ${{ repo.repository }}_${{ repo.project }}:
+          repository_name: ${{ repo.repository }}
+          project_name: ${{ repo.project }}
+    steps:
+      # Install Node.js runtime environment for running JavaScript scripts
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '14.x'
+
+      # Install axios HTTP client library needed for making API calls  
+      - script: |
+          npm install axios
+        displayName: "Install dependencies"
+
+      # Execute the script that checks pipeline configurations for this repository
+      - script: |
+          node get-pipeline-config.js "$(repository_name)" "$(project_name)"
+        displayName: "Download pipeline configuration for $(repository_name)"
+        env:
+          AZURE_DEVOPS_ORG_URL: $(azure_devops_org_url)
+          AZURE_DEVOPS_TOKEN: $(System.AccessToken)
+      # Install Terraform
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+        displayName: 'Install Terraform'
+
+      # Initialize Terraform
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+          backendType: 'azurerm'
+          backendServiceArm: 'Azure Service Connection'
+        displayName: 'Terraform Init'
+
+      # Apply Terraform configuration using pipelines.json as input
+      - task: TerraformCLI@0
+        inputs:
+          command: 'apply'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+          environmentServiceName: 'Azure Service Connection'
+          commandOptions: '-auto-approve -var="azure_devops_org_url=$(azure_devops_org_url)" -var="project_name=$(project_name)" -var="repository_id=$(repository_name)" -var-file="pipelines.json"'
+        displayName: 'Terraform Apply'
+
+  
