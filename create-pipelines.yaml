@@ -69,6 +69,6 @@ jobs:
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             environmentServiceName: 'EU Digital Non-Prod'
-            commandOptions: '-auto-approve -var="project_name=${{ parameters.pipeline_location }}" -var="repository_id=${{ repo.repository }}" -var-file="pipelines.json"'
+            commandOptions: '-auto-approve -var="project_name=${{ parameters.pipeline_location }}" -var="repository_id=exeloncorp/${{ repo.repository }}" -var-file="pipelines.json"'
           displayName: 'Terraform Apply'
   
