@@ -1,14 +1,20 @@
 trigger:
   - main
 
+parameters:
+  - name: repository_name
+    type: string
+  - name: project_name
+    type: string
+
 pool:
   vmImage: 'ubuntu-latest'
 
 extends:
   template: create-pipelines.yaml
   parameters:
-    repository: EU-Innovation-GetSubscriptionKey
-    project: EU-Services
+    repository: ${{parameters.repository_name}}
+    project: ${{parameters.project_name}}
     storageAccountName: 'xzeentfstatessta000'
     storageAccountRG: 'XZE-E-N-UCDSEC-S-RGP-10'
     containerName: 'adopipelines'
