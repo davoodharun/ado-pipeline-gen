@@ -5,11 +5,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 extends:
-  template: create-pipelines.yaml  # Template is in the root directory
+  template: create-pipelines.yaml
   parameters:
-    repositories:
-      - repository: EU-Innovation-GetSubscriptionKey
-        project: EU-Services
+    repository: EU-Innovation-GetSubscriptionKey
+    project: EU-Services
     storageAccountName: 'xzeentfstatessta000'
     storageAccountRG: 'XZE-E-N-UCDSEC-S-RGP-10'
     containerName: 'adopipelines'
