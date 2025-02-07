@@ -9,13 +9,13 @@ if (process.argv.length < 4) {
 }
 
 // Constants from environment variables and arguments
-let organization = process.env.AZURE_DEVOPS_ORG_URL;
-const personalAccessToken = process.env.AZURE_DEVOPS_TOKEN;
+let organization = process.env.AZDO_ORG_SERVICE_URL;
+const personalAccessToken = process.env.AZDO_PERSONAL_ACCESS_TOKEN;
 const repository = process.argv[2]; // First argument is repository name
 const project = process.argv[3]; // Second argument is project name
 
 if (!organization || !personalAccessToken) {
-    console.error('Required environment variables AZURE_DEVOPS_ORG_URL and AZURE_DEVOPS_TOKEN must be set');
+    console.error('Required environment variables AZDO_ORG_SERVICE_URL and AZDO_PERSONAL_ACCESS_TOKEN must be set');
     process.exit(1);
 }
 
