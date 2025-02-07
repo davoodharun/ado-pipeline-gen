@@ -6,6 +6,10 @@ terraform {
     }
   }
 }
+locals {
+  # Format repository name by removing special characters and converting to lowercase
+  formatted_repo_name = lower(replace(var.repository_id, "/[^a-zA-Z0-9]/", "-"))
+}
 
 provider "azuredevops" {
   # Authentication is configured using environment variables:
@@ -34,19 +38,21 @@ variable "pipelines" {
   }))
 }
 
+    
 resource "azuredevops_build_definition" "pipelines" {
   count        = length(var.pipelines)
   project_id   = var.project_name
-  name         = "${var.pipelines[count.index].name_prefix}-${var.pipelines[count.index].owning_team}-${var.pipelines[count.index].environment}${var.pipelines[count.index].suffix != "" ? "-" : ""}${var.pipelines[count.index].suffix}" # Enhanced naming convention with optional suffix
-  path         = "\\${var.pipelines[count.index].owning_team}\\${var.pipelines[count.index].name_prefix}"  # Grouping pipelines into folders
+  name         = "${local.formatted_repo_name}-${var.pipelines[count.index].name_prefix}-${var.pipelines[count.index].owning_team}-${var.pipelines[count.index].environment}${var.pipelines[count.index].suffix != "" ? "-" : ""}${var.pipelines[count.index].suffix}"
+  path         = "\\${var.pipelines[count.index].owning_team}\\${local.formatted_repo_name}"
 
   repository {
     repo_type   = "TfsGit"
     repo_id     = var.repository_id
     branch_name = var.pipelines[count.index].branch
-    yml_path   = var.pipelines[count.index].yaml_path
+    yml_path    = var.pipelines[count.index].yaml_path
   }
 }
+
 output "pipeline_details" {
   description = "Details of the provisioned Azure DevOps pipelines"
   value = [
