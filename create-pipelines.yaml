@@ -4,11 +4,19 @@ parameters:
     default:
       - repository: repo1
         project: project1
+  - name: storageAccountName
+    type: string
+  - name: storageAccountRG
+    type: string
+  - name: containerName
+    type: string
 
 jobs:
   - ${{ each repo in parameters.repositories }}:
     - job: Pipeline_${{ replace(repo.repository, '-', '_') }}
       displayName: "Configure Pipeline for ${{ repo.repository }}"
+      variables:
+        formattedRepoName: ${{ lower(replace(repo.repository, '-', '_')) }}
       steps:
         # Install Node.js runtime environment for running JavaScript scripts
         - task: NodeTool@0
@@ -47,6 +55,10 @@ jobs:
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             backendType: 'azurerm'
             backendServiceArm: 'Azure Service Connection'
+            backendAzureRmResourceGroupName: '${{ parameters.storageAccountRG }}'
+            backendAzureRmStorageAccountName: '${{ parameters.storageAccountName }}'
+            backendAzureRmContainerName: '${{ parameters.containerName }}'
+            backendAzureRmKey: 'pipeline_$(formattedRepoName).tfstate'
           displayName: 'Terraform Init'
 
         # Apply Terraform configuration using pipelines.json as input
