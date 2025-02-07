@@ -54,7 +54,7 @@ jobs:
             command: 'init'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
             backendType: 'azurerm'
-            backendServiceArm: 'Azure Service Connection'
+            backendServiceArm: 'EU Digital Non-Prod'
             backendAzureRmResourceGroupName: '${{ parameters.storageAccountRG }}'
             backendAzureRmStorageAccountName: '${{ parameters.storageAccountName }}'
             backendAzureRmContainerName: '${{ parameters.containerName }}'
@@ -66,7 +66,7 @@ jobs:
           inputs:
             command: 'apply'
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-            environmentServiceName: 'Azure Service Connection'
+            environmentServiceName: 'EU Digital Non-Prod'
             commandOptions: '-auto-approve -var="project_name=${{ repo.project }}" -var="repository_id=${{ repo.repository }}" -var-file="pipelines.json"'
           displayName: 'Terraform Apply'
   

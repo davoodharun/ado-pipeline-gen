@@ -10,6 +10,6 @@ extends:
     repositories:
       - repository: EU-Innovation-GetSubscriptionKey
         project: EU-Services
-    storageAccountName: 'yourstorageaccount'
-    storageAccountRG: 'your-storage-rg'
-    containerName: 'tfstate'
+    storageAccountName: 'xzeentfstatessta000'
+    storageAccountRG: 'XZE-E-N-UCDSEC-S-RGP-10'
+    containerName: 'adopipelines'
