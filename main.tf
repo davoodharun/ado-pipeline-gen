@@ -25,6 +25,7 @@ provider "azuredevops" {
 variable "project_name" {
   description = "Azure DevOps project name"
   type        = string
+  default = "EU-Infrastructure"
 }
 
 variable "repository_id" {
