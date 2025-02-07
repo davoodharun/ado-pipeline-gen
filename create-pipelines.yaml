@@ -29,9 +29,9 @@ jobs:
         inputs:
           versionSpec: '14.x'
 
-      # Install axios HTTP client library needed for making API calls  
+      # Install dependencies
       - script: |
-          npm install axios
+          npm install
         displayName: "Install dependencies"
 
       # Execute the script that checks pipeline configurations for this repository
