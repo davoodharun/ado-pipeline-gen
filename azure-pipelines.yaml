@@ -3,18 +3,11 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-  
-variables:
-  # Variables must be defined without sequence notation
-  repositories_var: |
-    [
-      {
-        "repository": "EU-Innovation-GetSubscriptionKey", 
-        "project": "EU-Services"
-      }
-    ]
+
 
 extends:
   template: create-pipelines.yaml  # Template is in the root directory
   parameters:
-    repositories: ${{ variables.repositories }} 
+    repositories:
+      - repository: EU-Innovation-GetSubscriptionKey
+        project: EU-Services
